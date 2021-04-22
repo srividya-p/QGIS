@@ -1,7 +1,15 @@
+from qgis.core import *
+from qgis.gui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+
+import importlib.util
 import math
 pi = math.pi
 
-from query_sector import QuerySectorPlaces
+query_spec = importlib.util.spec_from_file_location("query_sector", "/home/pika/Desktop/QGIS/Python/Places/query_sector.py")
+query_sector_file = importlib.util.module_from_spec(query_spec)
+query_spec.loader.exec_module(query_sector_file)
 
 class DrawSectorCircle(QgsMapTool):
     def __init__(self, canvas, iface):
@@ -79,12 +87,12 @@ class DrawSectorCircle(QgsMapTool):
         if ok:
             self.drawCircle(radius)
             self.drawSectorLines(radius)
-            iface.messageBar().pushMessage("Sectors Drawn",
+            self.iface.messageBar().pushMessage("Sectors Drawn",
                                            "Click on the sector for which you want to query places.\nPress 'Q' to Quit.\nPress 'L' to change Location.", level=Qgis.Success, duration=3)
 
-        query_places = QuerySectorPlaces(
-            iface.mapCanvas(), iface, point, radius, self.line_layers, self.circle)
-        iface.mapCanvas().setMapTool(query_places)
+        query_places = query_sector_file.QuerySectorPlaces(
+            self.iface.mapCanvas(), self.iface, point, radius, self.line_layers, self.circle)
+        self.iface.mapCanvas().setMapTool(query_places)
 
     def keyReleaseEvent(self, e):
         if(chr(e.key()) == 'Q'):

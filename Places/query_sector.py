@@ -1,7 +1,12 @@
-from draw_circle import DrawSectorCircle
+from qgis.core import *
+from qgis.gui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+
+import importlib.util
+import processing
 import math
 pi = math.pi
-import processing
 
 class QuerySectorPlaces(QgsMapTool):
     def __init__(self, canvas, iface, point, radius, line_layers, circle):
@@ -105,7 +110,6 @@ class QuerySectorPlaces(QgsMapTool):
         pointLayer = QgsProject.instance().mapLayersByName('Places')[0]
         places_in_sector = ''
         for a in self.sector_layer.getFeatures():
-            print(a)
             for b in pointLayer.getFeatures():
                 if a.geometry().contains(b.geometry()):
                     places_in_sector += str(b['name'])+'\n'
@@ -131,6 +135,11 @@ class QuerySectorPlaces(QgsMapTool):
         elif(chr(e.key()) == 'L'):
             self.clearSector()
             self.clearCanvas()
-            canvas_clicked = DrawSectorCircle(iface.mapCanvas(), iface)
-            iface.mapCanvas().setMapTool(canvas_clicked)
+
+            circle_spec = importlib.util.spec_from_file_location("draw_circle", "/home/pika/Desktop/QGIS/Python/Places/draw_circle.py")
+            draw_circle_file = importlib.util.module_from_spec(circle_spec)
+            circle_spec.loader.exec_module(draw_circle_file)
+
+            canvas_clicked = draw_circle_file.DrawSectorCircle(self.iface.mapCanvas(), self.iface)
+            self.iface.mapCanvas().setMapTool(canvas_clicked)
 

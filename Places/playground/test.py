@@ -4,11 +4,13 @@ import processing
 
 def load_layers():
     base_layer = QgsVectorLayer(
-        '/home/pika/Desktop/QGIS/NE/IND_adm2.shp', "IND_adm2", "ogr")
+        '/home/pika/Desktop/QGIS/NE/IND_adm2.shp', "Base Map", "ogr")
     places_layer = QgsVectorLayer(
         '/home/pika/Desktop/QGIS/NE/Places.gpkg', "Places", "ogr")
-
-    if(not QgsProject.instance().mapLayersByName('IND_adm2')):
+    roads_layer = QgsVectorLayer(
+        '/home/pika/Desktop/QGIS/NE/Roads.gpkg', "Roads", "ogr")
+ 
+    if(not QgsProject.instance().mapLayersByName('Base Map')):
         QgsProject.instance().addMapLayer(base_layer)
         print('Base Layer added to Registry!')
         symbol = QgsFillSymbol.createSimple({'color': 'orange'})
@@ -22,6 +24,14 @@ def load_layers():
             {'name': 'circle', 'color': 'green'})
         places_layer.renderer().setSymbol(symbol)
         places_layer.triggerRepaint()
+
+    if(not QgsProject.instance().mapLayersByName('Roads')):
+        roads_layer.renderer().symbol().setColor(QColor("pink"))
+        roads_layer.triggerRepaint()
+        QgsProject.instance().addMapLayer(roads_layer)
+        print('Roads Layer added to Registry!')
+       
+    
 
 
 class DrawSectorCircle(QgsMapTool):

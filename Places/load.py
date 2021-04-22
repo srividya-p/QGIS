@@ -1,3 +1,5 @@
+from qgis.core import *
+
 def load_layers():
     base_layer = QgsVectorLayer(
         '/home/pika/Desktop/QGIS/NE/IND_adm2.shp', "IND_adm2", "ogr")
