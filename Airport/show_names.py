@@ -1,4 +1,4 @@
-op_file = open('/home/pika/Desktop/QGIS/airports.txt', 'w')
+op_file = open('/home/pika/Desktop/QGIS/Airport/airports.txt', 'w')
 
 layer = iface.activeLayer()
 

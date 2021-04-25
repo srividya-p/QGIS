@@ -2,11 +2,11 @@ from qgis.core import *
 
 def load_layers():
     base_layer = QgsVectorLayer(
-        '/home/pika/Desktop/QGIS/NE/IND_adm2.shp', "IND_adm2", "ogr")
+        '/home/pika/Desktop/QGIS/Shape-Files/Base-Map/IND_adm2.shp', "Base Map", "ogr")
     places_layer = QgsVectorLayer(
-        '/home/pika/Desktop/QGIS/NE/Places.gpkg', "Places", "ogr")
+        '/home/pika/Desktop/QGIS/Shape-Files/Places/Places.gpkg', "Places", "ogr")
 
-    if(not QgsProject.instance().mapLayersByName('IND_adm2')):
+    if(not QgsProject.instance().mapLayersByName('Base Map')):
         QgsProject.instance().addMapLayer(base_layer)
         print('Base Layer added to Registry!')
         symbol = QgsFillSymbol.createSimple({'color': 'orange'})
