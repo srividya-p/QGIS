@@ -137,7 +137,7 @@ class QuerySectorPlaces(QgsMapTool):
             self.clearSector()
             self.clearCanvas()
             self.canvas.unsetMapTool(self)
-        elif(chr(e.key()) == 'L'):
+        elif(chr(e.key()) == 'D'):
             self.clearSector()
             self.clearCanvas()
 
@@ -147,4 +147,3 @@ class QuerySectorPlaces(QgsMapTool):
 
             canvas_clicked = draw_circle_file.DrawSectorCircle(self.iface.mapCanvas(), self.iface)
             self.iface.mapCanvas().setMapTool(canvas_clicked)
-

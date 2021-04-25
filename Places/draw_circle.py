@@ -13,6 +13,10 @@ query_spec = importlib.util.spec_from_file_location("query_sector", approot+"/qu
 query_sector_file = importlib.util.module_from_spec(query_spec)
 query_spec.loader.exec_module(query_sector_file)
 
+tool_spec = importlib.util.spec_from_file_location("tool", approot+"/switch_tools.py")
+tool_file = importlib.util.module_from_spec(tool_spec)
+tool_spec.loader.exec_module(tool_file)
+
 class DrawSectorCircle(QgsMapTool):
     def __init__(self, canvas, iface):
         self.canvas = canvas
@@ -21,6 +25,9 @@ class DrawSectorCircle(QgsMapTool):
         self.y = 0
         self.circle = QgsVectorLayer()
         self.line_layers = []
+        self.toolPan = tool_file.switchPanTool(self.canvas, self.iface)
+        self.toolZoomIn = tool_file.switchZoomTool(self.canvas, self.iface, False)
+        self.toolZoomOut = tool_file.switchZoomTool(self.canvas, self.iface, True)
         QgsMapToolEmitPoint.__init__(self, self.canvas)
 
     def clearCanvas(self):
@@ -84,7 +91,7 @@ class DrawSectorCircle(QgsMapTool):
         print ('Center - ({:.4f}, {:.4f})'.format(self.x, self.y))
 
         radius, ok = QInputDialog.getDouble(
-            self.iface.mainWindow(), 'Radius', 'Give a radius in km:', min=0.5)
+            self.iface.mainWindow(), 'Radius', 'Give a radius in km:', min=0.1)
 
         if ok:
             self.drawCircle(radius)
@@ -92,10 +99,17 @@ class DrawSectorCircle(QgsMapTool):
             self.iface.messageBar().pushMessage("Sectors Drawn",
                                            "Click on the sector for which you want to query places.\nPress 'Q' to Quit.\nPress 'L' to change Location.", level=Qgis.Success, duration=3)
 
-        query_places = query_sector_file.QuerySectorPlaces(
-            self.iface.mapCanvas(), self.iface, point, radius, self.line_layers, self.circle)
-        self.iface.mapCanvas().setMapTool(query_places)
+            query_places = query_sector_file.QuerySectorPlaces(
+                self.iface.mapCanvas(), self.iface, point, radius, self.line_layers, self.circle)
+            self.iface.mapCanvas().setMapTool(query_places)
 
     def keyReleaseEvent(self, e):
         if(chr(e.key()) == 'Q'):
             self.canvas.unsetMapTool(self)
+        elif(chr(e.key()) == 'P'):
+            self.canvas.setMapTool(self.toolPan)
+        elif(chr(e.key()) == 'I'):
+            self.canvas.setMapTool(self.toolZoomIn)
+        elif(chr(e.key()) == 'O'):
+            self.canvas.setMapTool(self.toolZoomOut)
+
