@@ -8,6 +8,8 @@ import processing
 import math
 pi = math.pi
 
+approot = QgsProject.instance().homePath()
+
 class QuerySectorPlaces(QgsMapTool):
     def __init__(self, canvas, iface, point, radius, line_layers, circle):
         self.canvas = canvas
@@ -136,7 +138,7 @@ class QuerySectorPlaces(QgsMapTool):
             self.clearSector()
             self.clearCanvas()
 
-            circle_spec = importlib.util.spec_from_file_location("draw_circle", "/home/pika/Desktop/QGIS/Places/draw_circle.py")
+            circle_spec = importlib.util.spec_from_file_location("draw_circle", approot+"/draw_circle.py")
             draw_circle_file = importlib.util.module_from_spec(circle_spec)
             circle_spec.loader.exec_module(draw_circle_file)
 

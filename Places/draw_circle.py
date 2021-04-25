@@ -7,7 +7,9 @@ import importlib.util
 import math
 pi = math.pi
 
-query_spec = importlib.util.spec_from_file_location("query_sector", "/home/pika/Desktop/QGIS/Places/query_sector.py")
+approot = QgsProject.instance().homePath()
+
+query_spec = importlib.util.spec_from_file_location("query_sector", approot+"/query_sector.py")
 query_sector_file = importlib.util.module_from_spec(query_spec)
 query_spec.loader.exec_module(query_sector_file)
 

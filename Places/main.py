@@ -1,14 +1,13 @@
 import importlib.util
 from qgis.core import *
 
-prjpath = QgsProject.instance().homePath()
-print(prjpath)
+approot = QgsProject.instance().homePath()
 
-load_spec = importlib.util.spec_from_file_location("load", "/home/pika/Desktop/QGIS/Places/load.py")
+load_spec = importlib.util.spec_from_file_location("load", approot+"/load.py")
 load_file = importlib.util.module_from_spec(load_spec)
 load_spec.loader.exec_module(load_file)
 
-circle_spec = importlib.util.spec_from_file_location("draw_circle", "/home/pika/Desktop/QGIS/Places/draw_circle.py")
+circle_spec = importlib.util.spec_from_file_location("draw_circle", approot+"/draw_circle.py")
 draw_circle_file = importlib.util.module_from_spec(circle_spec)
 circle_spec.loader.exec_module(draw_circle_file)
 
