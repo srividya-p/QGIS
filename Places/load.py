@@ -9,7 +9,7 @@ def load_layers():
     if(not QgsProject.instance().mapLayersByName('Base Map')):
         QgsProject.instance().addMapLayer(base_layer)
         print('Base Layer added to Registry!')
-        symbol = QgsFillSymbol.createSimple({'color': 'orange'})
+        symbol = QgsFillSymbol.createSimple({'color': '#e6cff2'})
         base_layer.renderer().setSymbol(symbol)
         base_layer.triggerRepaint()
 

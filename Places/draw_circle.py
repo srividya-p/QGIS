@@ -84,7 +84,7 @@ class DrawSectorCircle(QgsMapTool):
         print ('Center - ({:.4f}, {:.4f})'.format(self.x, self.y))
 
         radius, ok = QInputDialog.getDouble(
-            self.iface.mainWindow(), 'Radius', 'Give a radius in km:', min=0)
+            self.iface.mainWindow(), 'Radius', 'Give a radius in km:', min=0.5)
 
         if ok:
             self.drawCircle(radius)

@@ -116,6 +116,9 @@ class QuerySectorPlaces(QgsMapTool):
                 if a.geometry().contains(b.geometry()):
                     places_in_sector += str(b['name'])+'\n'
 
+        if(places_in_sector == ''):
+            places_in_sector = 'No Places Found!'
+
         QMessageBox().information(None, "Places - Sector "+str(n), places_in_sector)
 
     def canvasPressEvent(self, e):
