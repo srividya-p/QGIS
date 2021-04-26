@@ -9,11 +9,11 @@ pi = math.pi
 
 approot = QgsProject.instance().homePath()
 
-query_spec = importlib.util.spec_from_file_location("query_sector", approot+"/query_sector.py")
+query_spec = importlib.util.spec_from_file_location("query_sector", approot+"/query-places/query_sector.py")
 query_sector_file = importlib.util.module_from_spec(query_spec)
 query_spec.loader.exec_module(query_sector_file)
 
-tool_spec = importlib.util.spec_from_file_location("tool", approot+"/switch_tools.py")
+tool_spec = importlib.util.spec_from_file_location("tool", approot+"/utils/switch_tools.py")
 tool_file = importlib.util.module_from_spec(tool_spec)
 tool_spec.loader.exec_module(tool_file)
 

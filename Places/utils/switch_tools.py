@@ -11,7 +11,7 @@ class switchPanTool(QgsMapToolPan):
         QgsMapToolEmitPoint.__init__(self, self.canvas)
             
     def keyReleaseEvent(self, e):
-        circle_spec = importlib.util.spec_from_file_location("draw_circle", approot+"/draw_circle.py")
+        circle_spec = importlib.util.spec_from_file_location("draw_circle", approot+"/query-places/draw_circle.py")
         draw_circle_file = importlib.util.module_from_spec(circle_spec)
         circle_spec.loader.exec_module(draw_circle_file)
 
@@ -35,7 +35,7 @@ class switchZoomTool(QgsMapToolZoom):
         QgsMapToolEmitPoint.__init__(self, self.canvas, inOut)
     
     def keyReleaseEvent(self, e):
-        circle_spec = importlib.util.spec_from_file_location("draw_circle", approot+"/draw_circle.py")
+        circle_spec = importlib.util.spec_from_file_location("draw_circle", approot+"/query-places/draw_circle.py")
         draw_circle_file = importlib.util.module_from_spec(circle_spec)
         circle_spec.loader.exec_module(draw_circle_file)
         
