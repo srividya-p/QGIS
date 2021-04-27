@@ -14,6 +14,10 @@ circle_spec = importlib.util.spec_from_file_location("draw_circle", approot+"/qu
 draw_circle_file = importlib.util.module_from_spec(circle_spec)
 circle_spec.loader.exec_module(draw_circle_file)
 
+path_spec = importlib.util.spec_from_file_location("find_path", approot+"/shortest-path/find_path.py")
+find_path_file = importlib.util.module_from_spec(path_spec)
+path_spec.loader.exec_module(find_path_file)
+
 msgbox = QMessageBox()
 msgbox.setWindowTitle('Welcome to TaskGIS')
 msgbox.setStandardButtons(QMessageBox.Close)
@@ -32,3 +36,5 @@ elif msgbox.clickedButton() is places_button:
     iface.messageBar().pushMessage("Welcome", "Select a Center Point.\nPress 'Q' to Quit.", level=Qgis.Info, duration=3)
 elif msgbox.clickedButton() is path_button:
     load_file.load_path_layers()
+    path_tool = find_path_file.FindPath(iface.mapCanvas(), iface)
+    iface.mapCanvas().setMapTool(path_tool)
