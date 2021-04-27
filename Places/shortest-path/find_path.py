@@ -50,15 +50,21 @@ class FindPath(QgsMapTool):
         self.click_count += 1
         if(self.click_count == 1):
             self.origin_coords = self.toMapCoordinates(self.canvas.mouseLastXY())
-            self.iface.messageBar().pushMessage("Origin coordinates selected!", "Please select Destination coordinates", level=Qgis.Info, duration=2)
+            self.iface.messageBar().pushMessage("Origin coordinates selected!", "Please select Destination coordinates.", level=Qgis.Info, duration=2)
         elif(self.click_count == 2):
-            self.destination_coords = self.toMapCoordinates(self.canvas.mouseLastXY())
-            self.shortest_path()
-            self.iface.messageBar().pushMessage("Calculated Shortest Path!", "", level=Qgis.Success, duration=3)
-            self.iface.mapCanvas().unsetMapTool(self)
+            self.destination_coords = self.toMapCoordinates(self.canvas.mouseLastXY())    
+            self.iface.messageBar().pushMessage("Destination coordinates selected!", "Press Enter to calculate Shortest Route.", level=Qgis.Info, duration=2)
+        else:
+            pass
     
     def keyReleaseEvent(self, e):
-        if(chr(e.key()) == 'Q'):
+        if(e.key() == 16777220):
+            QApplication.instance().setOverrideCursor(Qt.WaitCursor)
+            self.shortest_path()
+            QApplication.instance().restoreOverrideCursor()
+            self.iface.messageBar().pushMessage("Calculated Shortest Path!", "", level=Qgis.Success, duration=3)
+            self.click_count = 0
+        elif(chr(e.key()) == 'Q'):
             self.canvas.unsetMapTool(self)
         elif(chr(e.key()) == 'P'):
             self.canvas.setMapTool(self.toolPan)
