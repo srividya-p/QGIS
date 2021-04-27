@@ -20,10 +20,30 @@ class FindPath(QgsMapTool):
         self.click_count = 0
         self.origin_coords = QgsPointXY()
         self.destination_coords = QgsPointXY()
-        self.toolPan = tool_file.switchPanTool(self.canvas, self.iface)
-        self.toolZoomIn = tool_file.switchZoomTool(self.canvas, self.iface, False)
-        self.toolZoomOut = tool_file.switchZoomTool(self.canvas, self.iface, True)
+        self.origin_layer = QgsVectorLayer()
+        self.destination_layer = QgsVectorLayer()
+        self.shortest_path_layer = QgsVectorLayer()
+        self.toolPan = tool_file.switchPanTool(self.canvas, self.iface, 'path')
+        self.toolZoomIn = tool_file.switchZoomTool(self.canvas, self.iface, False, 'path')
+        self.toolZoomOut = tool_file.switchZoomTool(self.canvas, self.iface, True, 'path')
         QgsMapToolEmitPoint.__init__(self, self.canvas)
+
+    def clear_coords(self):
+        try:
+            if(self.origin_layer.id()):
+                QgsProject.instance().removeMapLayer(self.origin_layer.id())
+                self.origin_layer = QgsVectorLayer()
+
+            if(self.destination_layer.id()):
+                QgsProject.instance().removeMapLayer(self.destination_layer.id())
+                self.destination_layer = QgsVectorLayer()
+
+            if(self.shortest_path_layer.id()):
+                QgsProject.instance().removeMapLayer(self.shortest_path_layer.id())
+                self.shortest_path_layer = QgsVectorLayer()
+        except Exception as e:
+            self.iface.messageBar().pushMessage("Nothing to clear!", "", level=Qgis.Warning, duration=2)
+
 
     def shortest_path(self):
         roads_layer = QgsProject.instance().mapLayersByName('Roads')[0]
@@ -47,6 +67,7 @@ class FindPath(QgsMapTool):
         route_layer.renderer().symbol().setWidth(0.86)
         route_layer.triggerRepaint()
 
+        self.shortest_path_layer = route_layer
         QgsProject.instance().addMapLayer(route_layer)
 
     def make_point_layer(self, point_type):
@@ -63,6 +84,7 @@ class FindPath(QgsMapTool):
             origin.commitChanges()
 
             origin.renderer().setSymbol(symbol)
+            self.origin_layer = origin
             QgsProject.instance().addMapLayer(origin)
         else:
             destination = QgsVectorLayer("Point", "Destination", "memory")
@@ -74,8 +96,8 @@ class FindPath(QgsMapTool):
             destination.commitChanges()
 
             destination.renderer().setSymbol(symbol)
+            self.destination_layer = destination
             QgsProject.instance().addMapLayer(destination)
-
 
     def canvasPressEvent(self, e):
         self.click_count += 1
@@ -96,9 +118,13 @@ class FindPath(QgsMapTool):
             self.shortest_path()
             QApplication.instance().restoreOverrideCursor()
             self.iface.messageBar().pushMessage("Calculated Shortest Path!", "", level=Qgis.Success, duration=3)
-            self.click_count = 0
-        elif(chr(e.key()) == 'Q'):
             self.canvas.unsetMapTool(self)
+        elif(chr(e.key()) == 'Q'):
+            self.clear_coords()
+            self.canvas.unsetMapTool(self)
+        elif(chr(e.key()) == 'C'):
+            self.clear_coords()
+            self.click_count = 0
         elif(chr(e.key()) == 'P'):
             self.canvas.setMapTool(self.toolPan)
         elif(chr(e.key()) == 'I'):

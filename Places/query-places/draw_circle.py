@@ -25,9 +25,9 @@ class DrawSectorCircle(QgsMapTool):
         self.y = 0
         self.circle = QgsVectorLayer()
         self.line_layers = []
-        self.toolPan = tool_file.switchPanTool(self.canvas, self.iface)
-        self.toolZoomIn = tool_file.switchZoomTool(self.canvas, self.iface, False)
-        self.toolZoomOut = tool_file.switchZoomTool(self.canvas, self.iface, True)
+        self.toolPan = tool_file.switchPanTool(self.canvas, self.iface, 'draw')
+        self.toolZoomIn = tool_file.switchZoomTool(self.canvas, self.iface, False, 'draw')
+        self.toolZoomOut = tool_file.switchZoomTool(self.canvas, self.iface, True, 'draw')
         QgsMapToolEmitPoint.__init__(self, self.canvas)
 
     def clearCanvas(self):
