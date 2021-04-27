@@ -43,17 +43,50 @@ class FindPath(QgsMapTool):
         }
             
         route_layer = processing.run("qneat3:shortestpathpointtopoint", params)['OUTPUT']
-            
+        route_layer.renderer().symbol().setColor(QColor("#17137c"))
+        route_layer.renderer().symbol().setWidth(0.86)
+        route_layer.triggerRepaint()
+
         QgsProject.instance().addMapLayer(route_layer)
+
+    def make_point_layer(self, point_type):
+        symbol = QgsMarkerSymbol.createSimple({'name': 'triangle', 'color': 'red'})
+        symbol.setSize(5)
+
+        if(point_type == 'origin'):
+            origin = QgsVectorLayer("Point", "Origin", "memory")
+            origin_features = QgsFeature()
+            origin_features.setGeometry(QgsGeometry.fromPointXY(self.origin_coords))
+            provider = origin.dataProvider()
+            origin.startEditing()
+            provider.addFeatures([origin_features])
+            origin.commitChanges()
+
+            origin.renderer().setSymbol(symbol)
+            QgsProject.instance().addMapLayer(origin)
+        else:
+            destination = QgsVectorLayer("Point", "Destination", "memory")
+            dest_features = QgsFeature()
+            dest_features.setGeometry(QgsGeometry.fromPointXY(self.destination_coords))
+            provider = destination.dataProvider()
+            destination.startEditing()
+            provider.addFeatures([dest_features])
+            destination.commitChanges()
+
+            destination.renderer().setSymbol(symbol)
+            QgsProject.instance().addMapLayer(destination)
+
 
     def canvasPressEvent(self, e):
         self.click_count += 1
         if(self.click_count == 1):
             self.origin_coords = self.toMapCoordinates(self.canvas.mouseLastXY())
+            self.make_point_layer('origin')
             self.iface.messageBar().pushMessage("Origin coordinates selected!", "Please select Destination coordinates.", level=Qgis.Info, duration=2)
         elif(self.click_count == 2):
             self.destination_coords = self.toMapCoordinates(self.canvas.mouseLastXY())    
-            self.iface.messageBar().pushMessage("Destination coordinates selected!", "Press Enter to calculate Shortest Route.", level=Qgis.Info, duration=2)
+            self.make_point_layer('destination')
+            self.iface.messageBar().pushMessage("Destination coordinates selected!", "Route calculation will start on pressing Enter...", level=Qgis.Info, duration=2)
         else:
             pass
     
