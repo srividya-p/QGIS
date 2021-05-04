@@ -27,6 +27,7 @@ class FindPath(QgsMapTool):
         self.toolZoomIn = tool_file.switchZoomTool(self.canvas, self.iface, False, 'path')
         self.toolZoomOut = tool_file.switchZoomTool(self.canvas, self.iface, True, 'path')
         self.roads_layer = QgsProject.instance().mapLayersByName('Roads')[0]
+        self.resetAlteredMaxspeeds()
         QgsMapToolEmitPoint.__init__(self, self.canvas)
 
     def clearCoords(self):
@@ -160,15 +161,17 @@ class FindPath(QgsMapTool):
     
     def keyReleaseEvent(self, e):
         if(e.key() == 16777220):
-            QApplication.instance().setOverrideCursor(Qt.WaitCursor)
-            self.shortestPath()
-            QApplication.instance().restoreOverrideCursor()
+            if(len(self.shortest_path_layers) == 0):
+                QApplication.instance().setOverrideCursor(Qt.WaitCursor)
+                self.shortestPath()
+                QApplication.instance().restoreOverrideCursor()
         elif(chr(e.key()) == 'R'):
-            self.excludePath()
-            self.greyPreviousPath()
-            QApplication.instance().setOverrideCursor(Qt.WaitCursor)
-            self.shortestPath()
-            QApplication.instance().restoreOverrideCursor()
+            if(len(self.shortest_path_layers)>0):
+                self.excludePath()
+                self.greyPreviousPath()
+                QApplication.instance().setOverrideCursor(Qt.WaitCursor)
+                self.shortestPath()
+                QApplication.instance().restoreOverrideCursor()
         elif(chr(e.key()) == 'Q'):
             self.resetAlteredMaxspeeds()
             self.clearCoords()
