@@ -66,7 +66,7 @@ def manual_loop():
         load_file.load_path_layers()
         path_tool = find_path_file.FindPath(iface.mapCanvas(), iface)
         iface.mapCanvas().setMapTool(path_tool)
-        iface.messageBar().pushMessage("Welcome", "Select Origin coordinates.\nPress 'Q' to Quit.", level=Qgis.Info, duration=3)
+        iface.messageBar().pushMessage("Welcome", "Select Origin coordinates.\nPress 'Q' to Quit.", level=Qgis.Info, duration=2)
     elif msgbox.clickedButton() is manual_button:
         info_ret = infobox.exec()
     
