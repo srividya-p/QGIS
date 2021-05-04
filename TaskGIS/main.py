@@ -48,8 +48,8 @@ info_text = """The following keys are available as shortcuts:<br>
 <p><b>D</b> - Switch to Draw Circle Tool</p>
 <p><b>Shortest Path Shortcuts</b></p>
 <p><b>S</b> - Switch to Select Location Tool</p>
-<p><b>C</b> - Change Locations</p>
-<p>Note - You may switch to Pan or Zoom either after selecting both the coordinates or before selecting the Origin.</p>
+<p><b>R</b> - Recalculate Shortest Path</p>
+<p>Note - You may switch to Pan or Zoom only before selecting the Origin.</p>
 """
 infobox.setText(info_text)
 
