@@ -160,6 +160,9 @@ class FindPath(QgsMapTool):
             pass
     
     def keyReleaseEvent(self, e):
+        origin_layer = QgsProject.instance().mapLayersByName('Origin')
+        destination_layer = QgsProject.instance().mapLayersByName('Destination')
+
         if(e.key() == 16777220):
             if(len(self.shortest_path_layers) == 0):
                 QApplication.instance().setOverrideCursor(Qt.WaitCursor)
@@ -177,11 +180,14 @@ class FindPath(QgsMapTool):
             self.clearCoords()
             self.canvas.unsetMapTool(self)
         elif(chr(e.key()) == 'P'):
-            self.canvas.setMapTool(self.toolPan)
+            if(len(origin_layer)==0 and len(destination_layer) == 0):
+                self.canvas.setMapTool(self.toolPan)
         elif(chr(e.key()) == 'I'):
-            self.canvas.setMapTool(self.toolZoomIn)
+            if(len(origin_layer)==0 and len(destination_layer) == 0):
+                self.canvas.setMapTool(self.toolZoomIn)
         elif(chr(e.key()) == 'O'):
-            self.canvas.setMapTool(self.toolZoomOut)
+            if(len(origin_layer)==0 and len(destination_layer) == 0):            
+                self.canvas.setMapTool(self.toolZoomOut)
 
 
 
