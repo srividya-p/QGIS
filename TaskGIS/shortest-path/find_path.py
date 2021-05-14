@@ -23,6 +23,7 @@ class FindPath(QgsMapTool):
         self.origin_layer = QgsVectorLayer()
         self.destination_layer = QgsVectorLayer()
         self.shortest_path_layers = []
+        self.join_exists = True
         self.toolPan = tool_file.switchPanTool(self.canvas, self.iface, 'path')
         self.toolZoomIn = tool_file.switchZoomTool(self.canvas, self.iface, False, 'path')
         self.toolZoomOut = tool_file.switchZoomTool(self.canvas, self.iface, True, 'path')
@@ -71,6 +72,12 @@ class FindPath(QgsMapTool):
         }
 
         join_layer = processing.run("qgis:joinattributesbylocation", join_params)['OUTPUT']
+        
+        self.join_exists = False
+        for join_feature in join_layer.getFeatures():
+            if(join_feature['fid'] != None):
+                self.join_exists = True
+                break
         for join_feature in join_layer.getFeatures():
             with edit(self.roads_layer):
                 query = '"fid" = '+str(join_feature['fid'])
@@ -106,6 +113,9 @@ class FindPath(QgsMapTool):
         }
 
         try:  
+            if(not self.join_exists):
+                raise ValueError('Unable to Join! No Path found!')
+
             route_layer = processing.run("qneat3:shortestpathpointtopoint", shortest_path_params)['OUTPUT']
             route_layer.renderer().symbol().setColor(QColor("#1372d8"))
             route_layer.renderer().symbol().setWidth(0.86)

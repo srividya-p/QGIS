@@ -49,7 +49,7 @@ def load_places_layer():
     return True
 
 def load_road_layer():    
-    if(path.exists(places_path)):
+    if(path.exists(roads_path)):
         roads_layer = QgsVectorLayer(roads_path, "Roads", "ogr")
         if(not QgsProject.instance().mapLayersByName('Roads')):
             roads_layer.renderer().symbol().setColor(QColor("brown"))
