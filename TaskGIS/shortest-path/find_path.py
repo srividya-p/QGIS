@@ -74,6 +74,7 @@ class FindPath(QgsMapTool):
         for join_feature in join_layer.getFeatures():
             with edit(self.roads_layer):
                 query = '"fid" = '+str(join_feature['fid'])
+                print(join_feature['fid'])
                 selection = self.roads_layer.getFeatures(QgsFeatureRequest().setFilterExpression(query))
                 for road_feature in selection:
                     road_feature['maxspeed'] = 0
@@ -101,7 +102,7 @@ class FindPath(QgsMapTool):
             'SPEED_FIELD':'maxspeed',
             'DEFAULT_SPEED':5,
             'TOLERANCE':0,
-            'OUTPUT':'memory:Shortest Path'+str(len(self.shortest_path_layers) + 1)
+            'OUTPUT':'memory:Shortest Path '+str(len(self.shortest_path_layers) + 1)
         }
 
         try:  
@@ -114,6 +115,7 @@ class FindPath(QgsMapTool):
             QgsProject.instance().addMapLayer(route_layer)
             self.iface.messageBar().pushMessage("(Re) Calculated Shortest Path!", "", level=Qgis.Success, duration=3)
         except Exception as e:
+            print(e)
             self.iface.messageBar().pushMessage("No (new) Simple Path found between Orign and Destination!", "", level=Qgis.Warning, duration=3)
 
     def makePointLayer(self, point_type):

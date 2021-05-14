@@ -25,6 +25,9 @@ intro_text = """<b>Welcome to TaskGIS</b>
 <li><b>Find Shortest Path</b> - Find the Shortest Path between the selected origin and destination.</li>
 <ul></p>
 <p>Shortcuts for tools are present in the Manual section.</p>
+<p><i>To Load in Shape files, place them in the folder named 'shape-files' present inside the
+Project Root Directory and enter their name CORRECTLY in the 'shape.config.py' file.</i></p>
+<p></p>
 """
 
 msgbox = QMessageBox()
@@ -38,7 +41,8 @@ manual_button = msgbox.addButton('Manual', QMessageBox.AcceptRole)
 infobox = QMessageBox()
 infobox.setWindowTitle('TaskGIS User Manual')
 infobox.setStandardButtons(QMessageBox.Close)
-info_text = """The following keys are available as shortcuts:<br>
+info_text = """
+The following keys are available as shortcuts:<br>
 <p><b>General Shortcuts</b></p>
 <p><b>P</b> - Pan over the Canvas</p>
 <p><b>I</b> - Zoom into the Canvas</p>
@@ -58,12 +62,25 @@ def manual_loop():
     if ret == QMessageBox.Close:
         QCloseEvent()
     elif msgbox.clickedButton() is places_button:
-        load_file.load_places_layers()
+        success_b = load_file.load_base_layer()
+        success_p = load_file.load_places_layer()
+        
+        if(not success_p):
+            iface.messageBar().pushMessage("Error!", "Some of the essential Input Shape File(s) do not exist! Terminating...", level=Qgis.Critical, duration=3)
+            QCloseEvent()
+            return
         canvas_clicked = draw_circle_file.DrawSectorCircle(iface.mapCanvas(), iface)
         iface.mapCanvas().setMapTool(canvas_clicked)
         iface.messageBar().pushMessage("Welcome", "Select a Center Point.\nPress 'Q' to Quit.", level=Qgis.Info, duration=3)
     elif msgbox.clickedButton() is path_button:
-        load_file.load_path_layers()
+        success_b = load_file.load_base_layer()
+        success_p = load_file.load_places_layer()
+        success_r = load_file.load_road_layer()
+
+        if(not success_p or not success_r):
+            iface.messageBar().pushMessage("Error!", "Some of the essential Input Shape File(s) do not exist! Terminating...", level=Qgis.Critical, duration=3)
+            QCloseEvent()
+            return
         path_tool = find_path_file.FindPath(iface.mapCanvas(), iface)
         iface.mapCanvas().setMapTool(path_tool)
         iface.messageBar().pushMessage("Welcome", "Select Origin coordinates.\nPress 'Q' to Quit.", level=Qgis.Info, duration=2)
